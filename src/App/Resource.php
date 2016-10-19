@@ -60,11 +60,12 @@ class Resource
     $this->id = $id;
   }
 
-  public function get($id)
+  public function get($id,array $params = array())
   {
     if (!isset($this->loaded)) {
       $this->id = $id;
-      $this->request('get',array('id'=>$id));
+      $params['id'] = $id;
+      $this->request('get',$params);
       $this->loaded = true;
     }
     return $this->data;
