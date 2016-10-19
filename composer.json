@@ -9,7 +9,7 @@
         "php": ">=5.2.1"
     },
     "autoload": {
-        "files": ["src/Addressix/autoload.php"]
+        "files": ["src/autoload.php"]
     },
     "extra": {
      }
