@@ -1,8 +1,8 @@
 {
-    "name": "addressix/apiclient",
+    "name": "addressix/addressixapi-client-php",
     "type": "library",
     "description": "Client library for Addressix API",
-    "keywords": ["addressix"],
+    "keywords": ["addressix","api"],
     "homepage": "http://www.addressix.com/dev/api-client-library/php",
     "license": "Apache-2.0",
     "require": {
