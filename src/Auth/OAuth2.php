@@ -79,7 +79,10 @@ class OAuth2
   
   public function getAccessToken()
   {
-    return $this->access_token;
+    if (isset($this->access_token))
+      return $this->access_token;
+    else 
+      return false;
   }
   
   public function authenticate($code)

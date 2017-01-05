@@ -45,7 +45,12 @@ class Resource
     if ($response->code==200) {
       $this->data = $response->body;
     } else {
-      throw new \AddressixAPI\Exception('Request to resource failed: ' . $response->code . '. URI was: ' . $this->app->getBaseURI(). $req_url);
+      if ($response->code==401) {
+	throw new \AddressixAPI\AuthException('Authorization failed: ' . $response->code . '. URI was: ' . $this->app->getBaseURI(). $req_url);
+      }
+      else {
+	throw new \AddressixAPI\Exception('Request to resource failed: ' . $response->code . '. URI was: ' . $this->app->getBaseURI(). $req_url);
+      }
     }
   }
   

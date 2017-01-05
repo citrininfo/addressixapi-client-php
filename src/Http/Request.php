@@ -5,6 +5,8 @@
  */
 namespace AddressixAPI\Http;
 
+use AddressixAPI\AuthException;
+
 class Request
 {
 	private $endpoint;	
@@ -21,7 +23,12 @@ class Request
 	public function signedRequest($url, $http_method = 'GET', array $parameters = array(), array $http_headers = array(), $form_content_type = 1)
   {   
     if ($auth = $this->client->getAuth()) {
-      $http_headers['Authorization'] = 'Bearer ' . $auth->getAccessToken();
+      $atok = $auth->getAccessToken();
+      if ($atok) {
+	$http_headers['Authorization'] = 'Bearer ' . $atok;
+      } else {
+	throw(new AuthException('No access token set'));	
+      }
     }
     return $this->request($url, $http_method, $parameters, $http_headers, $form_content_type);
   }
