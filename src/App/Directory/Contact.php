@@ -19,6 +19,11 @@ class Contact extends \AddressixAPI\App\Resource
 	'method' => 'GET',
         'uri' => '/contacts/'
 	);
+    $this->functions['getMemberships'] = 
+      array(
+        'method' => 'GET',
+        'uri' => '/contacts/:id/memberships'
+	);
   }
   
   public function get($id)
@@ -32,4 +37,12 @@ class Contact extends \AddressixAPI\App\Resource
     $this->request('search', $filters);
     return $this->data;
   }
+
+  public function getMemberships($id, $params=array())
+  {
+    $params['id'] = $id;
+    $this->request('get', $params);
+    return $this->data;  
+  }
+
 }
