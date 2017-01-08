@@ -1,15 +1,16 @@
 {
     "name": "addressix/addressixapi-client-php",
     "type": "library",
+    "version": "1.0.0",
     "description": "Client library for Addressix API",
-    "keywords": ["addressix","api"],
-    "homepage": "http://www.addressix.com/dev/api-client-library/php",
+    "keywords": ["addressix","api","php"],
+    "homepage": "https://github.com/addressix/addressixapi-client-php",
     "license": "Apache-2.0",
     "require": {
         "php": ">=5.2.1"
     },
     "autoload": {
-        "files": ["src/autoload.php"]
+	"psr-4": { "AddressixAPI\\Core\\": "src/" }
     },
     "extra": {
      }
