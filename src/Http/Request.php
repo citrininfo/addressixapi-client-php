@@ -20,7 +20,7 @@ class Request
     $this->client = $client;
 	}
 
-	public function signedRequest($url, $http_method = 'GET', array $parameters = array(), array $http_headers = array(), $form_content_type = 1)
+	public function signedRequest($url, $http_method = 'GET', $parameters = array(), array $http_headers = array(), $form_content_type = 1)
   {   
     if ($auth = $this->client->getAuth()) {
       $atok = $auth->getAccessToken();
@@ -71,8 +71,6 @@ class Request
 		curl_setopt($curl, CURLOPT_HEADER, true);
 		$http_headers['Accept'] = 'application/json';
 
-		curl_setopt($curl, CURLOPT_HTTPHEADER, $this->getFormattedHeaders($http_headers));
-
 		switch($http_method) {
 		case 'GET':
 			if (is_array($parameters) && count($parameters) > 0) {
@@ -81,11 +79,20 @@ class Request
 				$url .= '?' . $parameters;
 			}
 			break;
+		case 'PUT':
+			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
 		case 'POST':
 			curl_setopt($curl, CURLOPT_POST, true);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($parameters));
+			if (is_object($parameters)) {
+			  curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($parameters));
+			  $http_headers['Content-Type'] = 'application/json';
+			}
+			else {
+			  curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($parameters));
+			}
 			break;
 		}
+		curl_setopt($curl, CURLOPT_HTTPHEADER, $this->getFormattedHeaders($http_headers));
 		curl_setopt($curl, CURLOPT_URL, $url);
 		if( ! $response = curl_exec($curl))
 		{

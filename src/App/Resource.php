@@ -22,7 +22,7 @@ class Resource
   }
   
   // get the resource
-  public function request($name, array $params = array())
+  public function request($name, $params = array())
   {
     if (!isset($this->functions[$name])) {
       throw new \AddressixAPI\Exception('Function '.$name.' is not defined for this resource');
@@ -34,7 +34,12 @@ class Resource
     {
       if (substr($urlitem,0,1)==':') {
         $key = substr($urlitem,1);
-        if (isset($params[$key])) {
+	if (is_object($params)) {
+	  if (isset($params->$key)) {
+          $urlitem = $params->$key;
+	  }
+	}
+        else if (isset($params[$key])) {
           $urlitem = $params[$key];
           unset($params[$key]);
         }
