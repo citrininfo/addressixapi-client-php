@@ -59,6 +59,23 @@ class OAuth2
       return self::OAUTH2_AUTH_BASEURL . $this->domain . "/authorize?" . http_build_query($params, '', '&');
     }
   }
+
+  public function getLogoutUrl($redirect=false)
+  {
+    $params = array();
+    if ($redirect) {
+      $params['redirect'] = $redirect;
+    }
+    if (!isset($this->domain)) {
+      $url = 'https://www.addressix.com/account/logout';
+    } else {
+      $url = 'https://www.addressix.com/account/'.$this->domain.'/logout';
+    }
+    if ($params) {
+      $url .= "?" . http_build_query($params, '', '&');
+    }
+    return $url;
+  }
   
   public function fetchAccessToken($grant_type, array $parameters, array $extra_headers = array()) 
   {       
