@@ -24,6 +24,21 @@ class Contact extends \AddressixAPI\App\Resource
         'method' => 'GET',
         'uri' => '/contacts/:id/memberships'
 	);
+    $this->functions['update'] = 
+      array(
+	'method' => 'PUT',
+        'uri' => '/contacts/:addressixid'
+	);
+    $this->functions['addAddress'] = 
+      array(
+	'method' => 'POST',
+        'uri' => '/contacts/:owner/addresses'
+	);
+    $this->functions['updateAddress'] = 
+      array(
+	'method' => 'PUT',
+        'uri' => '/contacts/:owner/addresses/:addressid'
+	);
   }
   
   public function get($id)
@@ -45,4 +60,31 @@ class Contact extends \AddressixAPI\App\Resource
     return $this->data;  
   }
 
+  public function update($contact)
+  {
+    $this->request('update', $contact);
+    return $this->data;
+  }
+
+  public function addAddress($owner, $address)
+  {
+    if (is_object($address)) {
+      $address->owner = $owner;
+    } else {
+      $address['owner'] = $owner;
+    }
+    $this->request('addAddress', $address);
+    return $this->data;
+  }
+
+  public function updateAddress($owner, $address)
+  {
+    if (is_object($address)) {
+      $address->owner = $owner;
+    } else {
+      $address['owner'] = $owner;
+    }
+    $this->request('updateAddress', $address);
+    return $this->data;
+  }
 }
