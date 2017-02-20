@@ -10,7 +10,7 @@
         "php": ">=5.2.1"
     },
     "autoload": {
-	"psr-4": { "AddressixAPI\\Core\\": "src/" }
+	"psr-4": { "AddressixAPI\\": "src/" }
     },
     "extra": {
      }
