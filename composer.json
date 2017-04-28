@@ -1,7 +1,7 @@
 {
     "name": "addressix/addressixapi-client-php",
     "type": "library",
-    "version": "1.0.0",
+    "version": "1.1.1",
     "description": "Client library for Addressix API",
     "keywords": ["addressix","api","php"],
     "homepage": "https://github.com/addressix/addressixapi-client-php",
