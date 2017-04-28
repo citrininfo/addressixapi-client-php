@@ -1,5 +1,5 @@
 <?php
-namespace AddressixAPI\App\Config;
+namespace AddressixAPI\App\Auth;
 
 class User extends \AddressixAPI\App\Resource
 {

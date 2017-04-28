@@ -5,6 +5,7 @@ class OAuth2
 {
   const OAUTH2_REVOKE_URI = 'https://www.addressix.com/oauth2/v1/revoke';
   const OAUTH2_TOKEN_URI = 'https://www.addressix.com/oauth2/v1/token';
+  const OAUTH2_DELEGATED_TOKEN_URI = 'https://www.addressix.com/oauth2/v1/delegated_token';
   const OAUTH2_AUTH_URL = 'https://www.addressix.com/oauth2/v1/authorize';
   const OAUTH2_AUTH_BASEURL = 'https://www.addressix.com/oauth2/v1/';
   
@@ -85,8 +86,17 @@ class OAuth2
     
     $parameters['client_id'] = $this->client_id;
     $parameters['client_secret'] = $this->client_secret;
+
+    if ($grant_type=='client_credentials') {
+      // authenticate with Basic auth
+      $http_headers['Authorization'] = 'Basic '. base64_encode($this->client_id . ':' . $this->client_secret); 
+    }
     
-    return $this->client->getRequest()->request(self::OAUTH2_TOKEN_URI, 'POST', $parameters, $http_headers, 0);
+    if (!isset($parameters['delegation'])) {
+      return $this->client->getRequest()->request(self::OAUTH2_TOKEN_URI, 'POST', $parameters, $http_headers, 1);
+    } else {
+      return $this->client->getRequest()->request(self::OAUTH2_DELEGATED_TOKEN_URI, 'POST', $parameters, $http_headers, 1);
+    }
   }
 
   public function setAccessToken($token)
@@ -100,6 +110,13 @@ class OAuth2
       return $this->access_token;
     else 
       return false;
+  }
+
+  public function getAuthHeader() {
+    if (isset($this->access_token))
+      return 'Bearer ' . $this->access_token;
+    else 
+      return false;    
   }
   
   public function authenticate($code)

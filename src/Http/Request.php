@@ -23,9 +23,9 @@ class Request
 	public function signedRequest($url, $http_method = 'GET', $parameters = array(), array $http_headers = array(), $form_content_type = 1)
   {   
     if ($auth = $this->client->getAuth()) {
-      $atok = $auth->getAccessToken();
+      $atok = $auth->getAuthHeader();
       if ($atok) {
-	$http_headers['Authorization'] = 'Bearer ' . $atok;
+	$http_headers['Authorization'] = $atok;
       } else {
 	throw(new AuthException('No access token set'));	
       }
@@ -78,19 +78,30 @@ class Request
 			} elseif ($parameters) {
 				$url .= '?' . $parameters;
 			}
+			$parameters = array();
 			break;
 		case 'PUT':
 			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+			break;
 		case 'POST':
 			curl_setopt($curl, CURLOPT_POST, true);
-			if (is_object($parameters)) {
-			  curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($parameters));
-			  $http_headers['Content-Type'] = 'application/json';
-			}
-			else {
-			  curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($parameters));
-			}
 			break;
+		}
+		if (count($parameters)) {
+		  // we still have parameters to handle
+		  if ($form_content_type==1) {
+		    if (is_object($parameters)) {
+		      curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($parameters));
+		      $http_headers['Content-Type'] = 'application/json';
+		    }
+		    else {
+		      curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($parameters));
+		    }
+		  }
+		  else if ($form_content_type==3) {
+		    // raw
+		    curl_setopt($curl, CURLOPT_POSTFIELDS, $parameters['data']);
+		  }
 		}
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $this->getFormattedHeaders($http_headers));
 		curl_setopt($curl, CURLOPT_URL, $url);

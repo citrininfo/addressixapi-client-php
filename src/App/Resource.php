@@ -22,7 +22,7 @@ class Resource
   }
   
   // get the resource
-  public function request($name, $params = array())
+  public function request($name, $params = array(), $headers = array(), $form_type = 1)
   {
     if (!isset($this->functions[$name])) {
       throw new \AddressixAPI\Exception('Function '.$name.' is not defined for this resource');
@@ -46,15 +46,15 @@ class Resource
       }
     }
     $req_url = implode('/', $url);
-    $response = $this->app->getClient()->getRequest()->signedRequest($this->app->getBaseURI(). $req_url, $this->functions[$name]['method'], $params);
-    if ($response->code==200) {
+    $response = $this->app->getClient()->getRequest()->signedRequest($this->app->getBaseURI(). $req_url, $this->functions[$name]['method'], $params, $headers, $form_type);
+    if (($response->code==200) || ($response->code==201) || ($response->code==204)) {
       $this->data = $response->body;
     } else {
       if ($response->code==401) {
 	throw new \AddressixAPI\AuthException('Authorization failed: ' . $response->code . '. URI was: ' . $this->app->getBaseURI(). $req_url);
       }
       else {
-	throw new \AddressixAPI\Exception('Request to resource failed: ' . $response->code . '. URI was: ' . $this->app->getBaseURI(). $req_url);
+	throw new \AddressixAPI\Exception('Request to resource failed: ' . $response->code . '. URI was: ' . $this->app->getBaseURI(). $req_url, $response->code);
       }
     }
   }
@@ -68,6 +68,14 @@ class Resource
   public function setId($id)
   {
     $this->id = $id;
+  }
+
+  // set internals from rest-response
+  public function set($data)
+  {
+    if (isset($data->id)) {
+      $this->id = $data->id;
+    }
   }
 
   public function get($id,array $params = array())
