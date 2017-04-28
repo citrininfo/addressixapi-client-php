@@ -1,6 +1,10 @@
 <?php
 namespace AddressixAPI\App;
 
+use AddressixAPI\Exception\Exception AS APIException;
+use AddressixAPI\Exception\AuthException;
+use AddressixAPI\Exception\NotFoundException;
+
 class Resource
 {
   protected $app;
@@ -25,7 +29,7 @@ class Resource
   public function request($name, $params = array(), $headers = array(), $form_type = 1)
   {
     if (!isset($this->functions[$name])) {
-      throw new \AddressixAPI\Exception('Function '.$name.' is not defined for this resource');
+      throw new APIException('Function '.$name.' is not defined for this resource');
     }
     
     // prepare url with params
@@ -51,10 +55,13 @@ class Resource
       $this->data = $response->body;
     } else {
       if ($response->code==401) {
-	throw new \AddressixAPI\AuthException('Authorization failed: ' . $response->code . '. URI was: ' . $this->app->getBaseURI(). $req_url);
+	throw new AuthException('Authorization failed: ' . $response->code . '. URI was: ' . $this->app->getBaseURI(). $req_url);
+      }
+      else if ($response->code==404) {
+	throw new NotFoundException('Resource not found: ' . $response->code . '. URI was: ' . $this->app->getBaseURI(). $req_url);
       }
       else {
-	throw new \AddressixAPI\Exception('Request to resource failed: ' . $response->code . '. URI was: ' . $this->app->getBaseURI(). $req_url, $response->code);
+	throw new APIException('Request to resource failed: ' . $response->code . '. URI was: ' . $this->app->getBaseURI(). $req_url, $response->code);
       }
     }
   }

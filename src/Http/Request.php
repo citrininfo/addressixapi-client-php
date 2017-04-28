@@ -5,7 +5,8 @@
  */
 namespace AddressixAPI\Http;
 
-use AddressixAPI\AuthException;
+use AddressixAPI\Exception\Exception AS APIException;
+use AddressixAPI\Exception\AuthException;
 
 class Request
 {
@@ -107,17 +108,17 @@ class Request
 		curl_setopt($curl, CURLOPT_URL, $url);
 		if( ! $response = curl_exec($curl))
 		{
-			if ($response===FALSE) {
-        $errno = curl_errno($curl);
-        if ($errno==60) {
-          throw new \AddressixAPI\Exception('Error calling Addressix-Server. SSL-Verification failed, try option[verifypeer]=false');
-        } else {
-          throw new \AddressixAPI\Exception('Error calling Addressix-Server: Curl-Error: ' . $errno);
-        }
-			}
-			else {
-				throw new \AddressixAPI\Exception('Addressix-Server result has no content');
-			}
+		  if ($response===FALSE) {
+		    $errno = curl_errno($curl);
+		    if ($errno==60) {
+		      throw new APIException('Error calling Addressix-Server. SSL-Verification failed, try option[verifypeer]=false');
+		    } else {
+		      throw new APIException('Error calling Addressix-Server: Curl-Error: ' . $errno);
+		    }
+		  }
+		  else {
+		    throw new APIException('Addressix-Server result has no content');
+		  }
 		}
 
 		$error = curl_error($curl);

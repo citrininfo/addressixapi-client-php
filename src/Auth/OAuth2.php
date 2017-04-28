@@ -1,6 +1,10 @@
 <?php
 namespace AddressixAPI\Auth;
 
+use AddressixAPI\Exception\Exception AS APIException;
+use AddressixAPI\Exception\AuthException;
+use AddressixAPI\Exception\NotFoundException;
+
 class OAuth2
 {
   const OAUTH2_REVOKE_URI = 'https://www.addressix.com/oauth2/v1/revoke';
@@ -93,10 +97,25 @@ class OAuth2
     }
     
     if (!isset($parameters['delegation'])) {
-      return $this->client->getRequest()->request(self::OAUTH2_TOKEN_URI, 'POST', $parameters, $http_headers, 1);
+      $response = $this->client->getRequest()->request(self::OAUTH2_TOKEN_URI, 'POST', $parameters, $http_headers, 1);
     } else {
-      return $this->client->getRequest()->request(self::OAUTH2_DELEGATED_TOKEN_URI, 'POST', $parameters, $http_headers, 1);
+      $response = $this->client->getRequest()->request(self::OAUTH2_DELEGATED_TOKEN_URI, 'POST', $parameters, $http_headers, 1);      
     }
+
+    if ($response->code==200) {
+      $accesstoken = $response->body;
+    } else {
+      if ($response->code==401) {
+	throw new AuthException('Authorization failed: ' . $response->code . '.', 401);
+      }
+      else if ($response->code==404) {
+	throw new NotFoundException('User not found: ' . $response->code . '.', 404);
+      }
+      else {
+	throw new APIException('Request to resource failed: ' . $response->code . '.', $response->code);
+      }
+    }
+    return $accesstoken;
   }
 
   public function setAccessToken($token)
@@ -130,7 +149,7 @@ class OAuth2
       return $this->access_token;
     }
     else {
-      throw new \AddressixAPI\Exception('Authentication failed: ' .$response->code);
+      throw new APIException('Authentication failed: ' .$response->code);
     }
   }
 }

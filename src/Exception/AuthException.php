@@ -1,5 +1,5 @@
 <?php
-namespace AddressixAPI;
+namespace AddressixAPI\Exception;
 
 class AuthException extends Exception
 {

@@ -1,7 +1,9 @@
 <?php
 namespace AddressixAPI\App\Auth;
 
-class User extends \AddressixAPI\App\Resource
+use AddressixAPI\App\Resource
+
+class User extends Resource
 {
   protected $resource_uri = '/users';
 

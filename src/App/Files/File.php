@@ -39,7 +39,12 @@ class File extends \AddressixAPI\App\Resource
       array(
 	'method' => 'POST',
 	'uri' => '/files/:id/acls'
-	);    
+	);  
+    $this->functions['download'] = 
+      array(
+	'method' => 'GET',
+	'uri' => '/files/:id/content'
+	);  
   }
   
   function set($data) {
@@ -72,6 +77,12 @@ class File extends \AddressixAPI\App\Resource
     }
     $this->request('upload', array('sessionid'=>$sessionid, 'data' => $content), $headers, 3);
     return $this->get($this->data->itemid);
+  }
+
+  function getContent()
+  {
+    $this->request('download', array('id' => $this->id));
+    return $this->data;
   }
 
   function addPermission($addressixid,$organisationid,$role,$type='user', array $params = array())

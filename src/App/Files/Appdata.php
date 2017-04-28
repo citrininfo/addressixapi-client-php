@@ -17,6 +17,13 @@ class Appdata extends Folder
   
   function get() {
     $this->request('get');
-    parent::set($this->data);
+    $this->set($this->data);
+  }
+
+  function getByPath($path) {
+    if (!$this->id) {
+      $this->get();
+    }
+    return parent::getByPath($path);
   }
 }
