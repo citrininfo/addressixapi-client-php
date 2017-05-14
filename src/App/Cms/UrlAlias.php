@@ -16,16 +16,16 @@ class Article extends Resource
         'method' => 'GET',
         'uri' => '/articles/:id/:langcode'
       );
-    $this->functions['get_menu'] = 
+    $this->functions['get_processed'] = 
       array(
         'method' => 'GET',
-        'uri' => '/:siteid/menus/:id'
+        'uri' => '/urlaliases/process'
       );
   }
 
-  public function getMenu($siteid, $menuid)
+  public function getProcessed($siteid, $langcode, $alias)
   {
-    $this->request('get_menu', array('siteid'=>$siteid, 'id'=>$menuid));
+    $this->request('get_processed', array('siteid'=>$siteid, 'language'=>$langcode, 'alias'=>$alias));
     return $this->data;
   }
 
