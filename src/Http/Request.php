@@ -84,6 +84,9 @@ class Request
 		case 'PUT':
 			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
 			break;
+                case 'PATCH':
+			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PATCH');
+			break;
 		case 'POST':
 			curl_setopt($curl, CURLOPT_POST, true);
 			break;
