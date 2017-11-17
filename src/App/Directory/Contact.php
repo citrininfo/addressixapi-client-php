@@ -39,6 +39,11 @@ class Contact extends \AddressixAPI\App\Resource
 	'method' => 'PUT',
         'uri' => '/contacts/:owner/addresses/:addressid'
 	);
+    $this->functions['getPermissions'] = 
+      array(
+	'method' => 'GET',
+        'uri' => '/contacts/:addressixid/permissions'
+	);
   }
   
   public function get($id)
@@ -86,5 +91,16 @@ class Contact extends \AddressixAPI\App\Resource
     }
     $this->request('updateAddress', $address);
     return $this->data;
+  }
+
+  public function getPermissions($addressixid)
+  {
+    $this->request('getPermissions', array('addressixid' => $addressixid));
+    if (isset($this->data->permissions)) {
+      return $this->data->permissions;
+    }
+    else {
+      return false;
+    }
   }
 }
