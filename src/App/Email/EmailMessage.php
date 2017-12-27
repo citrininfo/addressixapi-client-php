@@ -3,6 +3,9 @@ namespace AddressixAPI\App\Email;
 
 use AddressixAPI\App\Resource;
 
+use AddressixAPI\App\Files;
+use AddressixAPI\App\Files\File;
+
 class EmailMessage extends Resource
 {
   protected $resource_uri = '/email';
@@ -26,8 +29,13 @@ class EmailMessage extends Resource
         'method' => 'GET',
         'uri' => '/boxes/:boxid/emails'
       );
+    $this->functions['create_upload'] =
+      array(
+            'method' => 'POST',
+            'uri' => '/boxes/:boxid/emails/:emailid/raw'
+            );
   }
-
+  
   public function get($boxid, $emailid, $params = array())
   {    
     $params['boxid'] = $boxid;
@@ -51,4 +59,22 @@ class EmailMessage extends Resource
     return $this->data;
   }
 
+  public function store($boxid, $emailid, $content, array $params=array())
+  {
+    // create the upload link
+    $params['boxid'] = $boxid;
+    $params['emailid'] = $emailid;    
+    $this->request('create_upload', $params);
+
+    $sessionid = $this->data->sessionid;
+    $headers = array();
+    if (isset($params['mime'])) {
+      $headers['Content-Type'] = $params['mime'];
+    }
+
+    $filesapp = new Files($this->app->getClient());
+    $file = new File($filesapp);
+    $file->request('upload', array('sessionid'=>$sessionid, 'data' => $content), $headers, 3);
+    return $file->getId();
+  }  
 }

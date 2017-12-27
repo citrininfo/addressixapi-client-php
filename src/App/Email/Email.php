@@ -20,7 +20,7 @@ class Email extends Resource
       array(
         'method' => 'GET',
         'uri' => '/boxes/:boxid/emails'
-      );
+      );    
   }
 
   public function getList($boxid, array $params=array())
@@ -28,6 +28,5 @@ class Email extends Resource
     $params['boxid'] = $boxid;
     $this->request('list', $params);
     return $this->data;
-  }
-
+  }  
 }
