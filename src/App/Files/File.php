@@ -67,7 +67,7 @@ class File extends \AddressixAPI\App\Resource
   function create($parentid, $filename, $content, $params = array()) {
     // create the upload link
     $params['parentid'] = $parentid;
-    $params['filename'] = $filename;
+    $params['filename'] = rawurlencode($filename);
     $this->request('create_upload', $params);
 
     $sessionid = $this->data->sessionid;
@@ -76,7 +76,8 @@ class File extends \AddressixAPI\App\Resource
       $headers['Content-Type'] = $params['mime'];
     }
     $this->request('upload', array('sessionid'=>$sessionid, 'data' => $content), $headers, 3);
-    return $this->get($this->data->itemid);
+    $this->id = $this->data->itemid;
+    $this->get();    
   }
 
   function getContent()
