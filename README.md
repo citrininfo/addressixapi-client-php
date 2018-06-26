@@ -45,5 +45,6 @@ The Client takes a config array with the following mandatory parameters:
 Optional options:
 - endpoint (String): Overwrite the default Addressix API endpoint
 - verifyssl (boolean): wheter to verify the SSL peer (default true)
+- oauth_url (String): Overwrite the base URL of the oauth server
 
 Obtain the Apps Client ID and Secret on [Create API Application](https://www.addressix.com/developer/apps/)

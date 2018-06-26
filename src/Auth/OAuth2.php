@@ -7,21 +7,20 @@ use AddressixAPI\Exception\NotFoundException;
 
 class OAuth2
 {
-  const OAUTH2_REVOKE_URI = 'https://www.addressix.com/oauth2/v1/revoke';
-  const OAUTH2_TOKEN_URI = 'https://www.addressix.com/oauth2/v1/token';
-  const OAUTH2_DELEGATED_TOKEN_URI = 'https://www.addressix.com/oauth2/v1/delegated_token';
-  const OAUTH2_AUTH_URL = 'https://www.addressix.com/oauth2/v1/authorize';
-  const OAUTH2_AUTH_BASEURL = 'https://www.addressix.com/oauth2/v1/';
-  
   private $clientid;
   private $secret;
-  	
+
   public function __construct($client)
   {
     $this->client = $client;
     $this->client_id = $client->getConfig('clientid');
     $this->client_secret = $client->getConfig('secret');
-    $this->redirect_url = $client->getConfig('redirect_uri');     
+    $this->redirect_url = $client->getConfig('redirect_uri');
+
+    $this->base_url = $client->getConfig('oauth_url');
+    $this->token_url = "$this->base_url/token";
+    $this->delegated_token_url = "$this->base_url/delegated_token";
+    $this->auth_url = "$this->base_url/authorize";
   }
   
   public function setClientId($clientid)
@@ -59,9 +58,9 @@ class OAuth2
     }
     
     if (!isset($this->domain)) {
-      return self::OAUTH2_AUTH_URL . "?" . http_build_query($params, '', '&');
+      return $this->auth_url . "?" . http_build_query($params, '', '&');
     } else {
-      return self::OAUTH2_AUTH_BASEURL . $this->domain . "/authorize?" . http_build_query($params, '', '&');
+      return "$this->base_url/$this->domain/authorize?" . http_build_query($params, '', '&');
     }
   }
 
@@ -97,9 +96,9 @@ class OAuth2
     }
     
     if (!isset($parameters['delegation'])) {
-      $response = $this->client->getRequest()->request(self::OAUTH2_TOKEN_URI, 'POST', $parameters, $http_headers, 1);
+      $response = $this->client->getRequest()->request($this->token_url, 'POST', $parameters, $http_headers, 1);
     } else {
-      $response = $this->client->getRequest()->request(self::OAUTH2_DELEGATED_TOKEN_URI, 'POST', $parameters, $http_headers, 1);      
+      $response = $this->client->getRequest()->request($this->delegated_token_url, 'POST', $parameters, $http_headers, 1);
     }
 
     if ($response->code==200) {
