@@ -59,7 +59,7 @@ class File extends \AddressixAPI\App\Resource
     $this->owner = $data->owner;
   }
 
-  function get() {
+  function get($id=NULL, $params = array()) {
     $this->request('get', array('id' => $this->id));
     $this->set($this->data);
   }
