@@ -16,15 +16,28 @@
  */
 namespace AddressixAPI;
 
+class NullLogger {
+  function debug($msg) { }
+  function info($msg) { }
+  function notice($msg) { }
+  function warning($msg) { }
+  function error($msg) { }
+  function critical($msg) { }
+  function alert($msg) { }
+  function emergency($msg) { }
+}
+
 class Client 
 {
 	private $auth;
+  public $logger;
 	
 	public function __construct(array $config = array())
 	{
 		$this->options['endpoint'] = isset($config['endpoint']) ? $config['endpoint'] : 'https://www.addressix.com/api';
 		$this->options['oauth_url'] = isset($config['oauth_url']) ? $config['oauth_url'] : 'https://www.addressix.com/oauth2/v1';
 		$this->options['verifyssl'] = isset($config['verifypeer']) ? $config['verifypeer'] : true;	
+    $this->logger = isset($config['logger']) ? $config['logger'] : new NullLogger();
     $valid_options = array('clientid','secret','redirect_uri');
     foreach($valid_options as $opt) {
       if (isset($config[$opt])) $this->options[$opt] = $config[$opt];

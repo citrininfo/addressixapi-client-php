@@ -61,6 +61,7 @@ class Request
 	public function request($url, $http_method = 'GET', $parameters = array(), array $http_headers = null, $form_content_type = 1)
 	{
 		$curl = curl_init();
+    $this->client->logger->info("AddressixAPI: $http_method - $url");
     if (!isset($http_headers['Accept'])) {
      $http_headers['Accept'] = 'application/json';
     }
@@ -131,6 +132,8 @@ class Request
 		$header      = substr($response, 0, $header_size);
 		$body        = substr($response, $header_size);
 		$httpCode    = $info['http_code'];
+
+    $this->client->logger->info("AddressixAPI: Response $httpCode");
 
 		$resp = new Response($httpCode, $body, $header, array());
 		curl_close($curl);
