@@ -59,8 +59,10 @@ class File extends \AddressixAPI\App\Resource
     $this->owner = $data->owner;
   }
 
-  function get() {
-    $this->request('get', array('id' => $this->id));
+  function get($id, array $params = array()) {
+    if($id != $this->id)
+      throw new Exception("Invalid id passed! $id != $this->id");
+    $this->request('get', array('id' => $id));
     $this->set($this->data);
   }
 
@@ -77,7 +79,7 @@ class File extends \AddressixAPI\App\Resource
     }
     $this->request('upload', array('sessionid'=>$sessionid, 'data' => $content), $headers, 3);
     $this->id = $this->data->itemid;
-    $this->get();    
+    $this->get($this->id);
   }
 
   function getContent()
