@@ -60,9 +60,7 @@ class File extends \AddressixAPI\App\Resource
   }
 
   function get($id, array $params = array()) {
-    if($id != $this->id)
-      throw new Exception("Invalid id passed! $id != $this->id");
-    $this->request('get', array('id' => $id));
+    $this->request('get', array('id' => $this->id));
     $this->set($this->data);
   }
 
