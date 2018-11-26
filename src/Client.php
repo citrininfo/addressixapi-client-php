@@ -35,6 +35,7 @@ class Client
 	public function __construct(array $config = array())
 	{
 		$this->options['endpoint'] = isset($config['endpoint']) ? $config['endpoint'] : 'https://www.addressix.com/api';
+		$this->options['fs-endpoint'] = isset($config['fs-endpoint']) ? $config['fs-endpoint'] : $this->options['endpoint'].'/aixfs/v1';
 		$this->options['oauth_url'] = isset($config['oauth_url']) ? $config['oauth_url'] : 'https://www.addressix.com/oauth2/v1';
 		$this->options['verifyssl'] = isset($config['verifypeer']) ? $config['verifypeer'] : true;	
     $this->logger = isset($config['logger']) ? $config['logger'] : new NullLogger();

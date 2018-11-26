@@ -5,11 +5,10 @@ use AddressixAPI\App\Files\Appdata;
 
 class Files extends \AddressixAPI\App
 {
-  protected $app_base = '/aixfs/v1';
-  
   public function __construct(\AddressixAPI\Client $client)
   {
-    parent::__construct($client);    
+    parent::__construct($client);
+    $this->app_uri = $client->options['fs-endpoint'];
   }
 
   public function getAppdata()
