@@ -21,7 +21,7 @@ class Group extends \AddressixAPI\App\Resource
 	);
   }
   
-  public function get($id)
+  public function get($id, array $params = array())
   {
     $this->request('get', array('id'=>$id));
     return $this->data;
